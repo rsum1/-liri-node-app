@@ -1,6 +1,6 @@
 require("dotenv").config()
 
-var keys = require("./keys.js")
+var keys = require('./keys')
 
 var Spotify = require('node-spotify-api')
 var spotify = new Spotify(keys.spotify)
@@ -30,12 +30,35 @@ const findConcert = (query, axios, moment) => {
     })
 }
 
+const songInfo = (query, spotify) => {
+  spotify
+    .search({ type: 'track', query: query })
+    .then(response => {
+      let data = response.tracks.items[0].artists
+      let artists = []
+      data.forEach(artist => {
+        artists.push(artist.name)
+      })
+      console.log(`Song Name: ${response.tracks.items[0].name}`)
+      console.log(`Artist(s): ${artists.join(', ')}`)
+      console.log(`Album: ${response.tracks.items[0].album.name}`)
+      console.log(`Preview Link: ${response.tracks.items[0].external_urls.spotify}`)
+    })
+    .catch(function (err) {
+      console.log(err)
+    });
+}
+
 switch (command) {
   case 'concert-this':
     findConcert(query, axios, moment)
     break;
   case 'spotify-this-song':
-    songInfo(query)
+    if(query){
+      songInfo(query, spotify)
+    } else {
+      songInfo('The Sign Ace Base', spotify)
+    }
     break;
   case 'movie-this':
     movieInfo(query)
