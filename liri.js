@@ -1,14 +1,7 @@
 require("dotenv").config()
 
-var keys = require('./keys')
-
-var Spotify = require('node-spotify-api')
-var spotify = new Spotify(keys.spotify)
-
-var axios = require('axios')
-var moment = require('moment')
-let command = process.argv[2]
-let query = process.argv[3]
+command = process.argv[2]
+query = process.argv[3]
 
 const findConcert = (query, axios, moment) => {
   axios
@@ -16,20 +9,14 @@ const findConcert = (query, axios, moment) => {
     .then(
       response => {
         if (response.data != 0) {
-          let venueName = response.data[0].venue.name
-          let venueLat = response.data[0].venue.latitude
-          let venueLon = response.data[0].venue.longitude
-          let concertDate = response.data[0].datetime
-          console.log(`The Venue is called ${venueName}`)
-          console.log(`The coordinates are Lat:${venueLat}, Lon:${venueLon}`)
-          console.log(`The concert date is ${moment(concertDate)}`)
+          console.log(`The Venue is called ${response.data[0].venue.name}`)
+          console.log(`The coordinates are Lat:${response.data[0].venue.latitude}, Lon:${response.data[0].venue.longitude}`)
+          console.log(`The concert date is ${moment(response.data[0].datetime)}`)
         } else {
           console.log('No Concerts Found')
         }
       })
-    .catch(
-      error => console.log(error)
-    )
+    .catch(error => console.log(error))
 }
 
 const songInfo = (query, spotify) => {
@@ -46,9 +33,7 @@ const songInfo = (query, spotify) => {
         console.log(`Album: ${response.tracks.items[0].album.name}`)
         console.log(`Preview Link: ${response.tracks.items[0].external_urls.spotify}`)
       })
-    .catch(
-      err => console.log(err)
-    )
+    .catch(err => console.log(err))
 }
 
 const movieInfo = (query, axios) => {
@@ -65,28 +50,55 @@ const movieInfo = (query, axios) => {
         console.log("Plot: " + response.data.Plot)
         console.log("Actors: " + response.data.Actors)
       })
-    .catch(err => console.log(err)
-    )
+    .catch(err => console.log(err))
 }
 
-switch (command) {
-  case 'concert-this':
-    findConcert(query, axios, moment)
-    break;
-  case 'spotify-this-song':
-    if (query) {
-      songInfo(query, spotify)
-    } else {
-      songInfo('The Sign Ace Base', spotify)
-    }
-    break;
-  case 'movie-this':
-    movieInfo(query, axios)
-    break;
-  case 'do-what-it-says':
-
-    break;
-  default:
-    console.log('error')
-    break
+const readRandom = (text) => {
+  var liriFunction = text.slice(0, text.indexOf(","))
+  var liriInput = text.slice(text.indexOf(",") + 1, text.length)
+  mainProgram(liriFunction, liriInput)
 }
+
+var mainProgram = (command, query) => {
+
+  var axios = require('axios')
+  var fs = require('fs')
+  var keys = require('./keys')
+  var moment = require('moment')
+  var Spotify = require('node-spotify-api')
+
+  var spotify = new Spotify(keys.spotify)
+
+  switch (command) {
+    case 'concert-this':
+      findConcert(query, axios, moment)
+      break;
+    case 'spotify-this-song':
+      if (query) {
+        songInfo(query, spotify)
+      } else {
+        songInfo('The Sign Ace Base', spotify)
+      }
+      break;
+    case 'movie-this':
+      if (query) {
+        movieInfo(query, axios)
+      } else {
+        movieInfo('Mr. Nobody', axios)
+      }
+      break;
+    case 'do-what-it-says':
+      fs.readFile('random.txt', 'utf8', function (error, data) {
+        if (error) {
+          return console.log(error)
+        }
+        readRandom(data)
+      })
+      break;
+    default:
+      console.log('errors')
+      break
+  }
+}
+
+mainProgram(command, query)
