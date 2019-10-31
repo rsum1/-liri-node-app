@@ -41,7 +41,7 @@ Run the following to use LIRI's concert search function:
 ```
 node liri.js spotify-this-song "<artist/band name goes here>"
 ```
-![](concert-this-song.gif)
+![](concert-this.gif)
 
 Run the following to use LIRI's song search function:
 ```
