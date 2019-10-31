@@ -39,7 +39,7 @@ Once our packages are installed, we are ready to start interacting with LIRI!
 
 Run the following to use LIRI's concert search function:
 ```
-node liri.js spotify-this-song "<artist/band name goes here>"
+node liri.js concert-this "<artist/band name goes here>"
 ```
 ![](concert-this.gif)
 
