@@ -8,6 +8,7 @@ LIRI provides three primary functions:
   * Tell you about upcoming concerts for a particular band or artist
   * Provide information about a particular song
   * Provide information about a particular movie
+  * Read commands from file
 
 ## Interecting with LIRI
 
@@ -54,3 +55,9 @@ Run the following to use LIRI's movie search function:
 node liri.js movie-this "<movie name goes here>"
 ```
 ![](movie-this.gif)
+
+Run the following command to have LIRI read a command and execute a function from a file(note the file must be titled "random.txt"):
+```
+node liri.js do-what-it-says
+```
+![](do-what-it-says.gif)
